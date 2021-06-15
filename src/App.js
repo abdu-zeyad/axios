@@ -64,7 +64,6 @@ class App extends React.Component {
   render() {
     return (
       <div>
-        {`please enter the city name and the date between 23/03/2021 and 04/04/2021`}
         <Form onSubmit={this.getLocation}>
           <InputGroup className="mb-3">
             <Button type='submit' value='search' variant="outline-secondary" id="button-addon1">
@@ -75,13 +74,7 @@ class App extends React.Component {
               aria-describedby="basic-addon1"
               type='text' placeholder='city name' name='searchQuery'
             />
-            {`for example 04/07/2021`}
-            <FormControl
 
-              aria-label="Example text with button addon"
-              aria-describedby="basic-addon1"
-              type='date' placeholder='date' name='searchdate'
-            />
 
           </InputGroup>
         </Form>
@@ -93,9 +86,7 @@ class App extends React.Component {
             <Card.Title> {this.state.displayMap && this.state.locData.display_name
             }</Card.Title>
             <Card.Text>
-              {`the tempretare for the entered date is `}
-              {this.state.displayMap && this.state.locDatadate}
-              {<br />}
+
               {this.state.displayMap && this.state.locData.lon}
               {this.state.displayMap && this.state.locData.lat}
               {this.state.displayErrMsg && this.state.errMsg}
