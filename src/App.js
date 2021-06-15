@@ -6,13 +6,14 @@ import Button from 'react-bootstrap/Button';
 import FormControl from 'react-bootstrap/FormControl';
 import Card from 'react-bootstrap/Card';
 
-
 class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       locData: '',
       errMsg: '',
+      locDatadate: '',
+      errMsgdate: '',
       displayErrMsg: false,
       displayMap: false
     }
@@ -28,7 +29,6 @@ class App extends React.Component {
         locData: locResult.data[0],
         displayMap: true,
         displayErrMsg: false
-
       })
     }
     catch {
@@ -40,11 +40,31 @@ class App extends React.Component {
       })
     }
 
+
+    let searchdate = event.target.searchdate.value;
+    let datUrl = `https://city-explorer-api2.herokuapp.com/getDatepra?dates=${searchdate}`;
+    try {
+      let dateresult = await axios.get(datUrl);
+      console.log(dateresult.data);
+      this.setState({
+        locDatadate: dateresult.data.high_temp,
+
+      })
+    }
+
+    catch {
+      this.setState({
+        errMsgdate: 'error this is a bad response',
+      })
+    }
+
   }
+  // https://city-explorer-api2.herokuapp.com/getDatepra?dates=2021-04-07
 
   render() {
     return (
       <div>
+
         <Form onSubmit={this.getLocation}>
           <InputGroup className="mb-3">
             <Button type='submit' value='search' variant="outline-secondary" id="button-addon1">
@@ -54,27 +74,35 @@ class App extends React.Component {
               aria-label="Example text with button addon"
               aria-describedby="basic-addon1"
               type='text' placeholder='city name' name='searchQuery'
+            />  <FormControl
+              aria-label="Example text with button addon"
+              aria-describedby="basic-addon1"
+              type='date' placeholder='date' name='searchdate'
             />
+
           </InputGroup>
         </Form>
 
         <Card style={{ width: '18rem' }}>
           {this.state.displayMap && <img src={`https://maps.locationiq.com/v3/staticmap?key=pk.43fed3791d35ddb76aa14f749c6d3080&center=${this.state.locData.lat},${this.state.locData.lon}`} alt='map' />}
           <Card.Body>
-            <Card.Title> {this.state.displayMap && this.state.locData.display_name}</Card.Title>
+            <Card.Title> {this.state.displayMap && this.state.locData.display_name
+            }</Card.Title>
             <Card.Text>
-
+              {this.state.displayMap && this.state.locDatadate}
+              {<br />}
               {this.state.displayMap && this.state.locData.lon}
               {this.state.displayMap && this.state.locData.lat}
               {this.state.displayErrMsg && this.state.errMsg}
 
+
             </Card.Text>
-          </Card.Body>
-        </Card>
+          </Card.Body >
+        </Card >
 
 
 
-      </div>
+      </div >
     )
   }
 }
