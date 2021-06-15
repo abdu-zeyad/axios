@@ -12,8 +12,6 @@ class App extends React.Component {
     this.state = {
       locData: '',
       errMsg: '',
-      locDatadate: '',
-      errMsgdate: '',
       displayErrMsg: false,
       displayMap: false
     }
@@ -41,22 +39,7 @@ class App extends React.Component {
     }
 
 
-    let searchdate = event.target.searchdate.value;
-    let datUrl = `https://city-explorer-api2.herokuapp.com/getDatepra?dates=${searchdate}`;
-    try {
-      let dateresult = await axios.get(datUrl);
-      console.log(dateresult.data);
-      this.setState({
-        locDatadate: dateresult.data.high_temp,
 
-      })
-    }
-
-    catch {
-      this.setState({
-        errMsgdate: 'error this is a bad response',
-      })
-    }
 
   }
   // https://city-explorer-api2.herokuapp.com/getDatepra?dates=2021-04-07
