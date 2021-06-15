@@ -64,7 +64,7 @@ class App extends React.Component {
   render() {
     return (
       <div>
-
+        {`please enter the city name and the date between 23/03/2021 and 04/04/2021`}
         <Form onSubmit={this.getLocation}>
           <InputGroup className="mb-3">
             <Button type='submit' value='search' variant="outline-secondary" id="button-addon1">
@@ -74,7 +74,10 @@ class App extends React.Component {
               aria-label="Example text with button addon"
               aria-describedby="basic-addon1"
               type='text' placeholder='city name' name='searchQuery'
-            />  <FormControl
+            />
+            {`for example 04/07/2021`}
+            <FormControl
+
               aria-label="Example text with button addon"
               aria-describedby="basic-addon1"
               type='date' placeholder='date' name='searchdate'
@@ -84,11 +87,13 @@ class App extends React.Component {
         </Form>
 
         <Card style={{ width: '18rem' }}>
+
           {this.state.displayMap && <img src={`https://maps.locationiq.com/v3/staticmap?key=pk.43fed3791d35ddb76aa14f749c6d3080&center=${this.state.locData.lat},${this.state.locData.lon}`} alt='map' />}
           <Card.Body>
             <Card.Title> {this.state.displayMap && this.state.locData.display_name
             }</Card.Title>
             <Card.Text>
+              {`the tempretare for the entered date is `}
               {this.state.displayMap && this.state.locDatadate}
               {<br />}
               {this.state.displayMap && this.state.locData.lon}
