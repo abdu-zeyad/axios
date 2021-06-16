@@ -1,76 +1,86 @@
 import React from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import { Form, Button } from 'react-bootstrap';
 import axios from 'axios';
+import Form from 'react-bootstrap/Form';
+import InputGroup from 'react-bootstrap/InputGroup';
+import Button from 'react-bootstrap/Button';
+import FormControl from 'react-bootstrap/FormControl';
+import Card from 'react-bootstrap/Card';
+
 class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      weather: [],
-      error: '',
-      lat: '',
-      lon: '',
-
+      locData: '',
+      errMsg: '',
+      locDatadate: '',
+      errMsgdate: '',
+      displayErrMsg: false,
+      displayMap: false
     }
   }
+  //localhost:3001/weather?searchQuery=amman
 
-
-  getweather = (e) => {
-    // localhost:3001/photo?searchQuery=book
-    e.preventDefault();
-    const searchQ = e.target.searchQ.value;
-    let locURL = `https://us1.locationiq.com/v1/search.php?key=pk.738c0a83616e5492e270f2f87e200f35&q=${searchQ}&format=json`;
-
-    axios.get(locURL).then(nameArray =>
+  getLocation = async (event) => {
+    event.preventDefault();
+    let sQuery = event.target.searchQuery.value;
+    let locURL = `https://localhost:3001/weather?searchQuery=amman`;
+    try {
+      let locResult = await axios.get(locURL);
+      console.log(locResult.data);
       this.setState({
-        lat: nameArray.data[0].lat,
-        lon: nameArray.data[0].lon,
+        locData: locResult.data[0],
+        displayMap: true,
+        displayErrMsg: false
+      })
+    }
+    catch {
+      this.setState({
+        errMsg: 'error this is a bad response',
+        displayErrMsg: true,
+        displayMap: false
 
       })
-    )
-      .catch(err => {
-        this.setState({
-          error: err.message
-        })
-      }
-      )
-    console.log(searchQ);
-
-
-
-    const SERVER_LINK = 'http://localhost:3001';
-    const url = `${SERVER_LINK}/weather?lat=${this.state.lat}&lon=${this.state.lon}`;
-
-    console.log(this.state.lat, this.state.lon);
-    console.log(url);
-    console.log(this.state.weather);
+    }
   }
 
   render() {
     return (
-      <>
-        <Form onSubmit={this.getweather}>
-          <Form.Group controlId="searchQuery">
-            <Form.Label>enter a city </Form.Label>
-            <Form.Control type="text" placeholder="Enter a search term" name='searchQ' />
-          </Form.Group>
-          <Button type="submit">
-            Submit
-          </Button>
-        </Form>
-        {/* {
-          this.state.weather.map((photo, idx) => {
-            return (
-              <div key={idx}>
-                <p>Number of Likes: {photo.numLikes}</p>
-                <p>URL: {photo.imgUrl}</p>
-              </div>
-            )
-          })
-        }
+      <div>
+        <Form onSubmit={this.getLocation}>
+          <InputGroup className="mb-3">
+            <Button type='submit' value='search' variant="outline-secondary" id="button-addon1">
+              Search
+            </Button>
+            <FormControl
+              aria-label="Example text with button addon"
+              aria-describedby="basic-addon1"
+              type='text' placeholder='city name' name='searchQuery'
+            />
 
-        {this.state.error} */}
-      </>
+
+          </InputGroup>
+        </Form>
+
+        <Card style={{ width: '18rem' }}>
+
+          {this.state.displayMap && <img src={`https://maps.locationiq.com/v3/staticmap?key=pk.43fed3791d35ddb76aa14f749c6d3080&center=${this.state.locData.lat},${this.state.locData.lon}`} alt='map' />}
+          <Card.Body>
+            <Card.Title> {this.state.displayMap && this.state.locData.display_name
+            }</Card.Title>
+            <Card.Text>
+
+              {this.state.displayMap && this.state.locData.lon}
+              {this.state.displayMap && this.state.locData.lat}
+              {this.state.displayErrMsg && this.state.errMsg}
+
+
+            </Card.Text>
+          </Card.Body >
+        </Card >
+
+
+
+      </div >
     )
   }
 }
