@@ -4,8 +4,8 @@ import Form from 'react-bootstrap/Form';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Button from 'react-bootstrap/Button';
 import FormControl from 'react-bootstrap/FormControl';
-import Card from 'react-bootstrap/Card';
-
+// import Card from 'react-bootstrap/Card';
+import Weather from './components/weather'
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -15,7 +15,8 @@ class App extends React.Component {
       locDatadate: '',
       errMsgdate: '',
       displayErrMsg: false,
-      displayMap: false
+      displayMap: false,
+      weatherData: []
     }
   }
   //localhost:3001/weather?searchQuery=amman
@@ -23,24 +24,26 @@ class App extends React.Component {
   getLocation = async (event) => {
     event.preventDefault();
     let sQuery = event.target.searchQuery.value;
-    let locURL = `https://localhost:3001/weather?searchQuery=amman`;
-    try {
-      let locResult = await axios.get(locURL);
-      console.log(locResult.data);
-      this.setState({
-        locData: locResult.data[0],
-        displayMap: true,
-        displayErrMsg: false
-      })
-    }
-    catch {
-      this.setState({
-        errMsg: 'error this is a bad response',
-        displayErrMsg: true,
-        displayMap: false
+    const SERVER_LINK = 'http://localhost:3001';
+
+    let locURL = `${SERVER_LINK}/weather?searchQuery=${sQuery}`;
+
+    axios.get(locURL)
+      .then(weatherArray => {
+        this.setState({
+          weatherData: weatherArray.data
+
+        })
+        console.log(this.state.weatherData);
 
       })
-    }
+      .catch(err => {
+        console.log("errorrrrr", err.message);
+        this.setState({
+          error: err.message
+        })
+      })
+
   }
 
   render() {
@@ -60,25 +63,7 @@ class App extends React.Component {
 
           </InputGroup>
         </Form>
-
-        <Card style={{ width: '18rem' }}>
-
-          {this.state.displayMap && <img src={`https://maps.locationiq.com/v3/staticmap?key=pk.43fed3791d35ddb76aa14f749c6d3080&center=${this.state.locData.lat},${this.state.locData.lon}`} alt='map' />}
-          <Card.Body>
-            <Card.Title> {this.state.displayMap && this.state.locData.display_name
-            }</Card.Title>
-            <Card.Text>
-
-              {this.state.displayMap && this.state.locData.lon}
-              {this.state.displayMap && this.state.locData.lat}
-              {this.state.displayErrMsg && this.state.errMsg}
-
-
-            </Card.Text>
-          </Card.Body >
-        </Card >
-
-
+        <Weather weatherData={this.state.weatherData} />
 
       </div >
     )
